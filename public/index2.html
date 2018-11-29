@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="form">
+    <input type="file" name="file" id="file">
+    <button>Upload</button>
+
+    <div id="progress"></div>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+<script>
+	function uploadFile(e) {
+		debugger;
+		e.preventDefault();
+		e.stopPropagation();
+		const progressBar = document.getElementById("progress");
+
+		let formData = new FormData();
+		const input = document.getElementById("file");
+
+		var config = {
+			onUploadProgress: function(progressEvent) {
+				var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
+				progressBar.innerHTML = percentCompleted;
+			}
+		};
+
+		formData.append("file", input.files[0]);
+		axios.post("/upload", formData, config);
+	}
+
+	const form = document.getElementById("form");
+	form.addEventListener("submit", uploadFile);
+</script>
+</body>
+</html>

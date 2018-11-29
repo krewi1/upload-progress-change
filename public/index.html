@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="form">
+    <input type="file" name="file" id="file" multiple>
+    <button>Upload</button>
+
+    <div id="progress"></div>
+</form>
+
+<script>
+    function uploadFile(e) {
+    	debugger;
+    	e.preventDefault();
+    	e.stopPropagation();
+		const progressBar = document.getElementById("progress");
+
+		const xhr = new XMLHttpRequest();
+		let formData = new FormData();
+		const input = document.getElementById("file");
+		for(var i = 0; i < input.files.length; i++) {
+			formData.append("file", input.files[i])
+        }
+		formData.append("file", input.files[0]);
+		xhr.open("POST", "/upload", true);
+		xhr.upload.onprogress = function (e) {
+			if (e.lengthComputable) {
+				progressBar.textContent = `${e.loaded * 100 / e.total}%`;
+			}
+		};
+		xhr.onloadstart = function (e) {
+			progressBar.value = 0;
+		};
+		xhr.onloadend = function (e) {
+			progressBar.value = e.loaded;
+		};
+		xhr.send(formData);
+	}
+
+	const form = document.getElementById("form");
+	form.addEventListener("submit", uploadFile);
+</script>
+</body>
+</html>
